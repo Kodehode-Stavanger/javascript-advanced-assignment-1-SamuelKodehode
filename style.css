@@ -1,0 +1,27 @@
+* {
+    box-sizing: border-box;
+    margin:0;
+    padding: 0;
+}
+body {
+    background-color: #000000;
+}
+#player {
+    position: absolute;
+    height: 100px;
+    width: 100px;
+    border-radius: 50%;
+    margin-bottom: 10px;
+}
+
+::-webkit-scrollbar {
+    display: none;
+}
+
+#player-render {
+    box-shadow: 0 0 100px #ffd840;
+    border-radius: 50%;
+    height: 100px;
+    width: 100px;
+}
+
