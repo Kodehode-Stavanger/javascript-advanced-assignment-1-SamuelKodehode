@@ -8,9 +8,9 @@ type Player = {
 	jumpForce: number
 	playerRotation: number
 	playerSize: number
+	playerVelocity: number
 	keyPressed: {
 		ArrowUp: boolean
-		ArrowDown: boolean
 		ArrowLeft: boolean
 		ArrowRight: boolean
 	}
@@ -25,9 +25,9 @@ const player: Player = {
 	jumpForce: 0,
 	playerRotation: 0,
 	playerSize: 100,
+	playerVelocity: 0,
 	keyPressed: {
 		ArrowUp: false,
-		ArrowDown: false,
 		ArrowLeft: false,
 		ArrowRight: false
 	}
@@ -39,17 +39,22 @@ const updatePlayer = (): void => {
 	const onGround: boolean = player.playerY + player.playerEl.clientHeight >= gameWindow.clientHeight
 
 	if (player.keyPressed.ArrowUp && onGround) {
-		player.jumpForce = 44 //JumpPower
+		player.jumpForce = 30 //JumpPower
 	}
 
 	player.playerY -= player.jumpForce //add jumpForce to player each frame
 
 	if (player.jumpForce > 0) {
-		player.jumpForce -= 4 //reduce jumpForce per frame
+		player.jumpForce -= 1 //reduce jumpForce per frame
+	}
+
+	player.playerVelocity += 0.4
+
+	if (!onGround && player.jumpForce <= 0) {
+		player.playerY += player.playerVelocity // gravity
 	}
 
 	if (!onGround) {
-		player.playerY += 4 // gravity
 		player.playerRen.style.backgroundImage = `url('img/gggrain1.svg')`
 		/*		player.playerRen.style.boxShadow = '0 0 150px blue'*/
 		player.playerRen.style.backgroundSize = `100px`
@@ -58,24 +63,15 @@ const updatePlayer = (): void => {
 		player.playerRen.style.backgroundImage = `url('img/gggrain2.svg')`
 		/*		player.playerRen.style.boxShadow = '0 0 150px yellow'*/
 		player.playerRen.style.backgroundSize = `100px`
+		player.playerVelocity = 0
 	}
 
-	if (
-		player.keyPressed.ArrowDown &&
-		player.playerY + player.playerEl.clientHeight + player.speed < gameWindow.clientHeight
-	) {
-		player.playerY += player.speed
-	}
-
-	if (player.keyPressed.ArrowLeft && player.playerX - player.speed - player.playerSize > 0) {
+	if (player.keyPressed.ArrowLeft && player.playerX - player.speed - player.playerSize > +75) {
 		player.playerX -= player.speed
 		player.playerRotation -= 10
 	}
 
-	if (
-		player.keyPressed.ArrowRight &&
-		player.playerX + player.speed + player.playerRen.clientWidth / 2 < gameWindow.clientWidth
-	) {
+	if (player.keyPressed.ArrowRight && player.playerX + player.speed < gameWindow.clientWidth + 75) {
 		player.playerX += player.speed
 		player.playerRotation += 10
 	}
