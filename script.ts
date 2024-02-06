@@ -1,3 +1,4 @@
+const gameWindow = document.getElementById('game-window') as HTMLDivElement
 type Player = {
 	playerEl: HTMLDivElement
 	playerRen: HTMLDivElement
@@ -18,12 +19,12 @@ type Player = {
 const player: Player = {
 	playerEl: document.getElementById('player') as HTMLDivElement,
 	playerRen: document.getElementById('player-render') as HTMLDivElement,
-	playerY: window.innerHeight / 2,
-	playerX: window.innerWidth / 2,
-	speed: 10,
+	playerY: gameWindow.clientHeight / 2,
+	playerX: gameWindow.clientWidth / 2,
+	speed: 3,
 	jumpForce: 0,
 	playerRotation: 0,
-	playerSize: 0,
+	playerSize: 100,
 	keyPressed: {
 		ArrowUp: false,
 		ArrowDown: false,
@@ -35,38 +36,46 @@ const player: Player = {
 const buttons: string[] = ['ArrowUp', 'ArrowDown', 'ArrowLeft', 'ArrowRight']
 
 const updatePlayer = (): void => {
-	const onGround: boolean = player.playerY + player.playerEl.clientHeight >= window.innerHeight
+	const onGround: boolean = player.playerY + player.playerEl.clientHeight >= gameWindow.clientHeight
 
 	if (player.keyPressed.ArrowUp && onGround) {
-		player.jumpForce = 30 //JumpPower
+		player.jumpForce = 44 //JumpPower
 	}
 
 	player.playerY -= player.jumpForce //add jumpForce to player each frame
 
 	if (player.jumpForce > 0) {
-		player.jumpForce -= 1 //reduce jumpForce per frame
+		player.jumpForce -= 4 //reduce jumpForce per frame
 	}
 
 	if (!onGround) {
-		player.playerY += 10 // gravity
+		player.playerY += 4 // gravity
 		player.playerRen.style.backgroundImage = `url('img/gggrain1.svg')`
+		/*		player.playerRen.style.boxShadow = '0 0 150px blue'*/
 		player.playerRen.style.backgroundSize = `100px`
 	}
 	if (onGround) {
 		player.playerRen.style.backgroundImage = `url('img/gggrain2.svg')`
+		/*		player.playerRen.style.boxShadow = '0 0 150px yellow'*/
 		player.playerRen.style.backgroundSize = `100px`
 	}
 
-	if (player.keyPressed.ArrowDown && player.playerY + player.playerSize + player.speed < window.innerHeight) {
+	if (
+		player.keyPressed.ArrowDown &&
+		player.playerY + player.playerEl.clientHeight + player.speed < gameWindow.clientHeight
+	) {
 		player.playerY += player.speed
 	}
 
-	if (player.keyPressed.ArrowLeft && player.playerX - player.speed > 0) {
+	if (player.keyPressed.ArrowLeft && player.playerX - player.speed - player.playerSize > 0) {
 		player.playerX -= player.speed
 		player.playerRotation -= 10
 	}
 
-	if (player.keyPressed.ArrowRight && player.playerX + player.playerSize + player.speed < window.innerWidth) {
+	if (
+		player.keyPressed.ArrowRight &&
+		player.playerX + player.speed + player.playerRen.clientWidth / 2 < gameWindow.clientWidth
+	) {
 		player.playerX += player.speed
 		player.playerRotation += 10
 	}
@@ -77,7 +86,12 @@ const updatePlayer = (): void => {
 	player.playerEl.style.left = `${player.playerX}px`
 }
 
-setInterval(updatePlayer, 17)
+function gameLoop() {
+	updatePlayer()
+	requestAnimationFrame(gameLoop)
+}
+
+gameLoop()
 
 window.addEventListener('keydown', (e: KeyboardEvent): void => {
 	buttons.forEach((button: string): void => {
