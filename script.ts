@@ -86,7 +86,7 @@ const updatePlayer = (): void => {
 	player.playerEl.style.left = `${player.playerX}px`
 }
 
-function gameLoop() {
+function gameLoop(): void {
 	updatePlayer()
 	requestAnimationFrame(gameLoop)
 }
