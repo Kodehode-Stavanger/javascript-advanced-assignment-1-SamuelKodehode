@@ -2,6 +2,7 @@
     margin:0;
     padding: 0;
     box-sizing: border-box;
+
 }
 body {
     background-color: #000000;
@@ -25,7 +26,7 @@ body {
 }
 
 body {
-    width: 100vw;
+    max-width: 100vw;
     height: 100vh;
 }
 section {
@@ -35,7 +36,8 @@ section {
 }
 
 #game-window {
-    height: 600px;
-    width: 1200px;
+    height: 690px;
+    width: 100vw;
     border: 3px solid red;
+    overflow: hidden ;
 }

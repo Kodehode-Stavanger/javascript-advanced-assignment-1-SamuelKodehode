@@ -18,43 +18,39 @@ const player = {
 };
 const buttons = ['ArrowUp', 'ArrowDown', 'ArrowLeft', 'ArrowRight'];
 const updatePlayer = () => {
-    const onGround = player.playerY + player.playerEl.clientHeight >= gameWindow.clientHeight;
-    if (player.keyPressed.ArrowUp && onGround) {
-        player.jumpForce = 30;
-    }
-    player.playerY -= player.jumpForce;
-    if (player.jumpForce > 0) {
-        player.jumpForce -= 1;
-    }
-    player.playerVelocity += 0.4;
-    if (!onGround && player.jumpForce <= 0) {
-        player.playerY += player.playerVelocity;
-    }
+    const onGround = player.playerY + player.playerSize >= gameWindow.clientHeight;
     if (!onGround) {
+        player.jumpForce -= 0.8;
         player.playerRen.style.backgroundImage = `url('img/gggrain1.svg')`;
         player.playerRen.style.backgroundSize = `100px`;
     }
     if (onGround) {
         player.playerRen.style.backgroundImage = `url('img/gggrain2.svg')`;
         player.playerRen.style.backgroundSize = `100px`;
+        player.jumpForce = 0;
         player.playerVelocity = 0;
+        player.playerY = gameWindow.clientHeight - player.playerSize;
     }
-    if (player.keyPressed.ArrowLeft && player.playerX - player.speed - player.playerSize > +75) {
+    if (player.keyPressed.ArrowLeft && player.playerX > 0) {
         player.playerX -= player.speed;
         player.playerRotation -= 10;
     }
-    if (player.keyPressed.ArrowRight && player.playerX + player.speed < gameWindow.clientWidth + 75) {
+    if (player.keyPressed.ArrowRight && player.playerX + player.speed < window.innerWidth - player.playerSize) {
         player.playerX += player.speed;
         player.playerRotation += 10;
     }
-    player.playerRen.style.rotate = `${player.playerRotation}deg`;
+    if (player.keyPressed.ArrowUp && onGround) {
+        player.jumpForce = 20;
+    }
+    player.playerY -= player.jumpForce;
+    player.playerRen.style.transform = `rotate(${player.playerRotation}deg)`;
     player.playerEl.style.top = `${player.playerY}px`;
     player.playerEl.style.left = `${player.playerX}px`;
 };
-function gameLoop() {
+const gameLoop = () => {
     updatePlayer();
     requestAnimationFrame(gameLoop);
-}
+};
 gameLoop();
 window.addEventListener('keydown', (e) => {
     buttons.forEach((button) => {

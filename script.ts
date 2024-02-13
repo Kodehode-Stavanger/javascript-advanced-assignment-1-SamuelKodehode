@@ -1,4 +1,5 @@
 const gameWindow = document.getElementById('game-window') as HTMLDivElement
+
 type Player = {
 	playerEl: HTMLDivElement
 	playerRen: HTMLDivElement
@@ -36,53 +37,44 @@ const player: Player = {
 const buttons: string[] = ['ArrowUp', 'ArrowDown', 'ArrowLeft', 'ArrowRight']
 
 const updatePlayer = (): void => {
-	const onGround: boolean = player.playerY + player.playerEl.clientHeight >= gameWindow.clientHeight
-
-	if (player.keyPressed.ArrowUp && onGround) {
-		player.jumpForce = 30 //JumpPower
-	}
-
-	player.playerY -= player.jumpForce //add jumpForce to player each frame
-
-	if (player.jumpForce > 0) {
-		player.jumpForce -= 1 //reduce jumpForce per frame
-	}
-
-	player.playerVelocity += 0.4
-
-	if (!onGround && player.jumpForce <= 0) {
-		player.playerY += player.playerVelocity // gravity
-	}
+	const onGround: boolean = player.playerY + player.playerSize >= gameWindow.clientHeight
 
 	if (!onGround) {
+		player.jumpForce -= 0.8
 		player.playerRen.style.backgroundImage = `url('img/gggrain1.svg')`
-		/*		player.playerRen.style.boxShadow = '0 0 150px blue'*/
 		player.playerRen.style.backgroundSize = `100px`
-	}
-	if (onGround) {
-		player.playerRen.style.backgroundImage = `url('img/gggrain2.svg')`
-		/*		player.playerRen.style.boxShadow = '0 0 150px yellow'*/
-		player.playerRen.style.backgroundSize = `100px`
-		player.playerVelocity = 0
 	}
 
-	if (player.keyPressed.ArrowLeft && player.playerX - player.speed - player.playerSize > +75) {
+	if (onGround) {
+		player.playerRen.style.backgroundImage = `url('img/gggrain2.svg')`
+		player.playerRen.style.backgroundSize = `100px`
+		player.jumpForce = 0
+		player.playerVelocity = 0
+		player.playerY = gameWindow.clientHeight - player.playerSize
+	}
+
+	if (player.keyPressed.ArrowLeft && player.playerX > 0) {
 		player.playerX -= player.speed
 		player.playerRotation -= 10
 	}
 
-	if (player.keyPressed.ArrowRight && player.playerX + player.speed < gameWindow.clientWidth + 75) {
+	if (player.keyPressed.ArrowRight && player.playerX + player.speed < window.innerWidth - player.playerSize) {
 		player.playerX += player.speed
 		player.playerRotation += 10
 	}
 
-	player.playerRen.style.rotate = `${player.playerRotation}deg`
+	if (player.keyPressed.ArrowUp && onGround) {
+		player.jumpForce = 20 // JumpPower
+	}
 
+	player.playerY -= player.jumpForce
+
+	player.playerRen.style.transform = `rotate(${player.playerRotation}deg)`
 	player.playerEl.style.top = `${player.playerY}px`
 	player.playerEl.style.left = `${player.playerX}px`
 }
 
-function gameLoop(): void {
+const gameLoop = (): void => {
 	updatePlayer()
 	requestAnimationFrame(gameLoop)
 }
