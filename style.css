@@ -1,0 +1,43 @@
+* {
+    margin:0;
+    padding: 0;
+    box-sizing: border-box;
+
+}
+body {
+    background-color: #000000;
+}
+#player {
+    position: absolute;
+    height: 100px;
+    width: 100px;
+    border-radius: 50%;
+}
+
+::-webkit-scrollbar {
+    display: none;
+}
+
+#player-render {
+    box-shadow: 0 0 100px #ffd840;
+    border-radius: 50%;
+    height: 100px;
+    width: 100px;
+}
+
+body {
+    max-width: 100vw;
+    height: 100vh;
+}
+section {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+#game-window {
+    height: 690px;
+    width: 100vw;
+    border: 3px solid red;
+    overflow: hidden ;
+}
